@@ -1,7 +1,7 @@
 #install.packages('RSQLite')
 #install.packages("DBI")
 #install.packages("tidyverse")
-#install.packages("gitcreds")
+install.packages("gitcreds")
 
 library(DBI)
 library(RSQLite)
