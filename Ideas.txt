@@ -1,0 +1,18 @@
+Ideas:
+
+I believe pitches are shown in the data in the exact time they occur no matter
+what game that pitch was thrown in. This makes the games all interconnected. 
+
+To get data on pitch sequencing, we have to order the dataset correctly for the
+whole season.
+
+Not sure how this will be stored but the rough first try at creating this should
+be for the pitches to first be grouped by game_id, which is one of the fields in
+the dataset. Then group those by the at_bat_number of the particular game.
+
+After that, all at bats will be grouped. Then order the pitches in the at bat by
+the pitch_number, which specifies which pitch of the at bat it was. 
+
+Once all this is completed, then I will be able to write queries about the
+different pitches when being preceded by a specific pitch and look for actionable
+data that I can use.
