@@ -158,6 +158,18 @@ previous_FF_in_play = dbGetQuery(db, "SELECT COUNT(*) AS '#'
 print(previous_FF_in_play)
 
 
+prev_pitch_curr_pitch_types = dbGetQuery(db, "SELECT previous_pitch, pitch_type, COUNT(*) AS 'Occurances'
+                                         FROM ordered_w_prev_pitch
+                                         WHERE previous_pitch != '<NA>'
+                                         GROUP BY pitch_type, previous_pitch")
+print(prev_pitch_curr_pitch_types)
+
+# Query written to figure out what the random pitch types SC, FA, CS, etc. were.
+questions = dbGetQuery(db, "SELECT pitch_name, COUNT(pitch_name) as 'Total'
+                       FROM ordered_w_prev_pitch
+                       WHERE pitch_type == 'SC'
+                       GROUP BY pitch_name")
+print(questions)
 
 
 #pitch types of all pitches gone for base hits where fastball was the previous pitch
