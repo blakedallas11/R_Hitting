@@ -16,3 +16,4 @@ the pitch_number, which specifies which pitch of the at bat it was.
 Once all this is completed, then I will be able to write queries about the
 different pitches when being preceded by a specific pitch and look for actionable
 data that I can use.
+

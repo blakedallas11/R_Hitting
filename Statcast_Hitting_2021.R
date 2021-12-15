@@ -1,10 +1,14 @@
 #install.packages('RSQLite')
 #install.packages("DBI")
 #install.packages("tidyverse")
+install.packages("gitcreds")
 
 library(DBI)
 library(RSQLite)
 library(tidyverse)
+library(gitcreds)
+
+gitcreds_set()
 
 
 #create date ranges for the year
