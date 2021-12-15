@@ -113,6 +113,79 @@ db = dbConnect(SQLite(),dbname = "Statcast.sqlite")
 dbWriteTable(conn = db, name = "StatcastHitting", SavantData, overwrite = T, row.names = F)
 
 
+#Write data to new table ordered in sequential order
+Ordered_at_bats = dbGetQuery(db, "SELECT * 
+                            FROM StatcastHitting
+                            ORDER BY game_pk,
+                             at_bat_number ASC,
+                             pitch_number ASC")
+
+dbWriteTable(db, name = "ordered_at_bats", Ordered_at_bats, overwrite = T, row.names = F)
+
+
+#Get the previous pitch as 'LAG' attached to all pitches. May write an insert column for this Query to make 
+# subsequent queries less complicated
+FF_Hits = dbGetQuery(conn = db, 
+                         "SELECT *, LAG (pitch_type, 1) OVER (
+        PARTITION BY game_pk,
+        at_bat_number
+        ORDER BY pitch_number
+    ) AS 'previous_pitch'
+    FROM ordered_at_bats")
+#Fetch results from DB Query
+print(FF_Hits)
+
+remove(Ordered_at_bats)
+
+
+# Create new table where the previous pitch is another column in the data
+dbWriteTable(db, name = "ordered_w_prev_pitch", FF_Hits, overwrite = T, row.names = F)
+
+
+#get pitch type and count of all pitches thrown where the previous pitch is a 4 seam fastball
+previous_FF = dbGetQuery(db, "SELECT pitch_type, COUNT(*) AS '#'
+                         FROM ordered_w_prev_pitch
+                         WHERE previous_pitch == 'FF'
+                         GROUP BY pitch_type")
+print(previous_FF)
+
+
+#get count of occurrences where pitch hit into play and previous pitch was 4 seam fastball
+previous_FF_in_play = dbGetQuery(db, "SELECT COUNT(*) AS '#'
+                         FROM ordered_w_prev_pitch
+                         WHERE previous_pitch == 'FF'
+                         AND description == 'hit_into_play'")
+print(previous_FF_in_play)
+
+
+
+
+#pitch types of all pitches gone for base hits where fastball was the previous pitch
+previous_FF_Hits = dbGetQuery(db, "SELECT pitch_type, COUNT(*) AS '#'
+                         FROM ordered_w_prev_pitch
+                         WHERE previous_pitch == 'FF'
+                         AND (events == 'double'
+                         OR events == 'single'
+                         OR events == 'triple'
+                         OR events == 'home_run')
+                         GROUP BY pitch_type")
+print(previous_FF_Hits)
+
+#total count of hits when the previous pitch was a fastball
+previous_FF_Hits_count = dbGetQuery(db, "SELECT COUNT(*) AS '#'
+                         FROM ordered_w_prev_pitch
+                         WHERE previous_pitch == 'FF'
+                         AND (events == 'double'
+                         OR events == 'single'
+                         OR events == 'triple'
+                         OR events == 'home_run')")
+print(previous_FF_Hits_count)
+
+FFBABIP = previous_FF_Hits_count / previous_FF_in_play
+
+print(FFBABIP)
+
+
 SavantData %>% slice(1:5)
 
 #Using data frame operators, query the data frame like an SQL query
@@ -129,6 +202,8 @@ SavantData %>%
            OR ) %>%
     group_by(events) %>%
     summarise(count = n())
+
+remove(SavantData)
 
 
 #Get all instances of balls in play
