@@ -1,7 +1,7 @@
 #install.packages('RSQLite')
 #install.packages("DBI")
 #install.packages("tidyverse")
-install.packages("gitcreds")
+#install.packages("gitcreds")
 
 library(DBI)
 library(RSQLite)
@@ -161,10 +161,19 @@ previous_FF_in_play = dbGetQuery(db, "SELECT COUNT(*) AS '#'
                          AND description == 'hit_into_play'")
 print(previous_FF_in_play)
 
-
+# All realistic combinations of 2 pitch sequences minus genaric reads, <NA>'s, and uncommon pitch types
 prev_pitch_curr_pitch_types = dbGetQuery(db, "SELECT previous_pitch, pitch_type, COUNT(*) AS 'Occurances'
                                          FROM ordered_w_prev_pitch
                                          WHERE previous_pitch != '<NA>'
+                                         AND pitch_type != '<NA>'
+                                         AND pitch_type != 'CS'
+                                         AND pitch_type != 'FA'
+                                         AND pitch_type != 'KN'
+                                         AND pitch_type != 'EP'
+                                         AND previous_pitch != 'CS'
+                                         AND previous_pitch != 'FA'
+                                         AND previous_pitch != 'KN'
+                                         AND previous_pitch != 'EP'
                                          GROUP BY pitch_type, previous_pitch")
 print(prev_pitch_curr_pitch_types)
 
