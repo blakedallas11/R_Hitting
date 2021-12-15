@@ -130,7 +130,7 @@ dbWriteTable(db, name = "ordered_at_bats", Ordered_at_bats, overwrite = T, row.n
 
 #Get the previous pitch as 'LAG' attached to all pitches. May write an insert column for this Query to make 
 # subsequent queries less complicated
-FF_Hits = dbGetQuery(conn = db, 
+orderedABs_prevPitch = dbGetQuery(conn = db, 
                          "SELECT *, LAG (pitch_type, 1) OVER (
         PARTITION BY game_pk,
         at_bat_number
@@ -138,13 +138,13 @@ FF_Hits = dbGetQuery(conn = db,
     ) AS 'previous_pitch'
     FROM ordered_at_bats")
 #Fetch results from DB Query
-print(FF_Hits)
+print(orderedABs_prevPitch)
 
 remove(Ordered_at_bats)
 
 
 # Create new table where the previous pitch is another column in the data
-dbWriteTable(db, name = "ordered_w_prev_pitch", FF_Hits, overwrite = T, row.names = F)
+dbWriteTable(db, name = "ordered_w_prev_pitch", orderedABs_prevPitch, overwrite = T, row.names = F)
 
 
 #get pitch type and count of all pitches thrown where the previous pitch is a 4 seam fastball
