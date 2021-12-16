@@ -17,8 +17,8 @@ Once all this is completed, then I will be able to write queries about the
 different pitches when being preceded by a specific pitch and look for actionable
 data that I can use.
 
-NOTE: The above theory worked out but don't want to delete it so the history of the ideas page
-will be preserved
+NOTE: The above theory worked out but don't want to delete it so the history of 
+the ideas page will be preserved
 
 
 I think I have found a solution to my problem for not being able to get the BABIP
@@ -35,6 +35,6 @@ of hits for that sequence, it will return 0 or NULL in the table. After that,
 I will have to figure out how to place the default value of 0 in for hits in the
 sequences that have not recorded hits. 
 
-If this gets me past the problem of not being able to figure out BABIP easily, I will
-write it here.
+If this gets me past the problem of not being able to figure out BABIP easily,
+I will write it here.
 
