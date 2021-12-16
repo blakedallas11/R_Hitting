@@ -59,7 +59,7 @@ print(pitchSequenceBIPCountsOnly)
 #Maybe Join the two queries or use a complex one to get both numbers in the same query
 #then try to use an R mathematical function to divide the two numbers in each row and get a
 # batting average for balls in play
-pitchSequenceHitCountsOnly = dbGetQuery(db, "SELECT COUNT(*) AS 'Hits by pitch sequence'
+pitchSequenceHitCountsOnly = dbGetQuery(db, "SELECT previous_pitch, pitch_type, COUNT(*) AS 'Hits by pitch sequence'
                                          FROM ordered_w_prev_pitch
                                          WHERE description == 'hit_into_play'
                                          AND (events == 'double'
