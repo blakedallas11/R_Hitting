@@ -1,5 +1,5 @@
 
-EVbyPitchTypeWPrevPitch = dbGetQuery(db, "SELECT previous_pitch, pitch_type, ROUND(AVG(launch_speed),1) AS 'AVG_EV_W_PREV', ROUND(AVG(launch_angle),1) AS 'AVG_LA_W_PREV'
+EVbyPitchTypeWPrevPitch = dbGetQuery(db, "SELECT previous_pitch, pitch_type, ROUND(AVG(launch_speed),1) AS 'AVG_EV_W_PREV', ROUND(AVG(launch_angle),1) AS 'AVG_LA_W_PREV', COUNT()
                            FROM ordered_w_prev_pitch
                            WHERE description == 'hit_into_play'
                            AND previous_pitch != '<NA>'
@@ -12,7 +12,8 @@ EVbyPitchTypeWPrevPitch = dbGetQuery(db, "SELECT previous_pitch, pitch_type, ROU
                            AND previous_pitch != 'FA'
                            AND previous_pitch != 'KN'
                            AND previous_pitch != 'EP'
-                           GROUP BY pitch_type, previous_pitch")
+                           GROUP BY pitch_type, previous_pitch
+                           HAVING COUNT() > 40")
 print(EVbyPitchTypeWPrevPitch)
 
 dbWriteTable(db, "EVbyPrevPitchPitchType", EVbyPitchTypeWPrevPitch,overwrite = T, row.names = F)
@@ -40,6 +41,21 @@ EVtwoColumns = dbGetQuery(db, "SELECT  EVbyPrevPitchPitchType.previous_pitch, EV
                           ORDER BY difference ASC")
 print(EVtwoColumns)
 
+
+EVtwoColumnsEvSort = dbGetQuery(db, "SELECT  EVbyPrevPitchPitchType.previous_pitch, EVbyPrevPitchPitchType.pitch_type, EVbyPrevPitchPitchType.AVG_EV_W_PREV,
+                          EVbyPitchType.AVG_EV, EVbyPrevPitchPitchType.AVG_EV_W_PREV - EVbyPitchType.AVG_EV AS 'difference'
+                          FROM EVbyPrevPitchPitchType 
+                          INNER JOIN EVbyPitchType ON EVbyPrevPitchPitchType.pitch_type = EVbyPitchType.pitch_type
+                          ORDER BY AVG_EV_W_PREV ASC")
+print(EVtwoColumnsEvSort)
+
+
+
+mostoccurances = dbGetQuery(db, "SELECT player_name, description, launch_speed
+                            FROM ordered_w_prev_pitch
+                            WHERE pitch_type == 'CU'
+                            AND previous_pitch == 'KC'")
+print(mostoccurances)
 
 
 #Plot 1

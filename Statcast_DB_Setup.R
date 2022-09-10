@@ -141,7 +141,20 @@ orderedABs_prevPitch = dbGetQuery(conn = db,
 print(orderedABs_prevPitch)
 
 
+first_10_rows = dbGetQuery(db, "SELECT *
+                           FROM ordered_at_bats
+                           LIMIT 10")
+print(first_10_rows)
 
+
+pitch_names = dbGetQuery(db, "SELECT DISTINCT pitch_type, pitch_name
+                         FROM ordered_at_bats
+                         ")
+print(pitch_names)
+
+events = dbGetQuery(db, "SELECT DISTINCT events
+                    FROM ordered_w_prev_pitch")
+print(events)
 
 # Create new table where the previous pitch is another column in the data
 dbWriteTable(db, name = "ordered_w_prev_pitch", orderedABs_prevPitch, overwrite = T, row.names = F)
